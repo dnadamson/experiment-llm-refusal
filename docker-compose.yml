@@ -9,10 +9,12 @@ services:
       - ./data:/app/data
       - ./configs:/app/configs
       - ./outputs:/app/outputs
+      - ../hf-cache:/hf-cache
     entrypoint: jupyter
     command: notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root
     environment:
       - TOKENIZERS_PARALLELISM=false
+      - HF_HOME=/hf-cache
 
   train:
     build: .
@@ -21,4 +23,7 @@ services:
       - ./data:/app/data
       - ./configs:/app/configs
       - ./outputs:/app/outputs
+      - ../hf-cache:/hf-cache
+    environment:
+      - HF_HOME=/hf-cache
     # Override CMD with: docker compose run train safety_finetune.train --config configs/smoke.yaml
