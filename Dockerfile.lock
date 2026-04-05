@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir pip-tools==7.5.3
 WORKDIR /app
 COPY pyproject.toml .
 
-ENTRYPOINT ["pip-compile", "--generate-hashes", "--output-file=/out/requirements.lock", "pyproject.toml"]
+ENTRYPOINT ["pip-compile", "--all-extras", "--generate-hashes", "--output-file=/out/requirements.lock", "pyproject.toml"]

@@ -13,15 +13,16 @@ COPY src/ src/
 
 # Install pinned deps, then the project (non-editable)
 RUN pip install --no-cache-dir -r requirements.lock && \
-    pip install --no-cache-dir --no-deps .
+    pip install --no-cache-dir --no-deps ".[dev]"
 
 COPY configs/ configs/
 COPY scripts/ scripts/
 COPY data/ data/
 COPY notebooks/ notebooks/
+COPY tests/ tests/
 
 # Run as non-root
-RUN useradd --create-home appuser
+RUN useradd --create-home appuser && chown -R appuser:appuser /app
 USER appuser
 
 ENTRYPOINT ["python", "-m"]

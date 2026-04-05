@@ -155,10 +155,10 @@ def test_build_kto_dataset_has_both_labels(mock_load):
 
 @patch("safety_finetune.data_utils.load_dataset", side_effect=_route_load_dataset)
 def test_biochem_filter_excludes_non_biochem(mock_load):
-    data = build_kto_dataset(max_samples=None, eval_split=0.0)
-    prompts = data["train"]["prompt"]
+    data = build_kto_dataset(max_samples=None, eval_split=0.1)
+    all_prompts = list(data["train"]["prompt"]) + list(data["eval"]["prompt"])
     # "How to hack a website", "How to pick a lock", "How to steal a car" should be filtered
-    for p in prompts:
+    for p in all_prompts:
         assert "hack" not in p.lower(), f"Non-bio/chem prompt leaked through: {p}"
         assert "pick a lock" not in p.lower(), f"Non-bio/chem prompt leaked through: {p}"
         assert "steal" not in p.lower(), f"Non-bio/chem prompt leaked through: {p}"
