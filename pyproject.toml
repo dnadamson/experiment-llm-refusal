@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68.0"]
+requires = ["setuptools==80.10.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,27 +8,27 @@ version = "0.1.0"
 description = "QLoRA fine-tuning Qwen2.5 for safety refusal on bio/chem questions"
 requires-python = ">=3.10"
 dependencies = [
-    "torch>=2.1.0",
-    "transformers>=4.40.0",
-    "trl>=0.8.0",
-    "peft>=0.10.0",
-    "bitsandbytes>=0.43.0",
-    "datasets>=2.18.0",
-    "accelerate>=0.28.0",
-    "pyyaml>=6.0",
-    "pandas>=2.0.0",
+    "torch==2.7.1",
+    "transformers==4.56.2",
+    "trl==0.23.1",
+    "peft==0.16.0",
+    "bitsandbytes==0.41.3.post2",
+    "datasets==4.4.2",
+    "accelerate==1.9.0",
+    "pyyaml==6.0.2",
+    "pandas==2.2.3",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=8.0",
-    "ruff>=0.3.0",
-    "ipykernel>=6.0",
-    "jupyter>=1.0",
+    "pytest==8.3.5",
+    "ruff==0.14.14",
+    "ipykernel==6.29.5",
+    "jupyter==1.1.1",
 ]
 gcp = [
-    "google-cloud-storage>=2.14.0",
-    "wandb>=0.16.0",
+    "google-cloud-storage==3.8.0",
+    "wandb==0.24.2",
 ]
 
 [project.scripts]

@@ -1,7 +1,13 @@
-.PHONY: build smoke train eval test lint notebook clean
+.PHONY: build lock smoke train eval test lint notebook clean
 
 IMAGE := safety-finetune
 RUN := docker compose run --rm train
+
+# Regenerate requirements.lock inside the target Python version (3.11)
+# Run this when you change pyproject.toml dependencies
+lock:
+	docker build -f Dockerfile.lock -t $(IMAGE)-lock . && \
+	docker run --rm -v $(PWD):/out $(IMAGE)-lock
 
 build:
 	docker compose build
