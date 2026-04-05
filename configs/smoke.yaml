@@ -1,0 +1,29 @@
+# Smoke test config: Qwen 0.5B, tiny dataset, 1 epoch
+# Validates pipeline locally before renting GPU time
+
+model:
+  name: "Qwen/Qwen2.5-0.5B-Instruct"
+  quantization: null  # 0.5B fits in fp32 on 8GB M1
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.05
+  target_modules: ["q_proj", "v_proj"]
+
+training:
+  method: "kto"
+  num_train_epochs: 1
+  per_device_train_batch_size: 2
+  gradient_accumulation_steps: 2
+  learning_rate: 5.0e-5
+  warmup_ratio: 0.1
+  max_length: 512
+  logging_steps: 10
+
+data:
+  max_samples: 100  # tiny subset for smoke test
+  eval_split: 0.2
+
+output:
+  dir: "outputs/smoke"

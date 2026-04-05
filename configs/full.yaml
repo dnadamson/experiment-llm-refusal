@@ -1,0 +1,31 @@
+# Full training config: Qwen 7B QLoRA on GCP GPU (L4 or A100)
+
+model:
+  name: "Qwen/Qwen2.5-7B-Instruct"
+  quantization: "4bit"  # QLoRA
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+
+training:
+  method: "kto"
+  num_train_epochs: 3
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 2.0e-5
+  warmup_ratio: 0.1
+  max_length: 1024
+  logging_steps: 10
+  save_steps: 100
+  bf16: true
+
+data:
+  max_samples: null  # use full dataset
+  eval_split: 0.1
+
+output:
+  dir: "outputs/full"
+  push_to_hub: false

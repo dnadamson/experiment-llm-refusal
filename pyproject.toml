@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "safety-finetune"
+version = "0.1.0"
+description = "QLoRA fine-tuning Qwen2.5 for safety refusal on bio/chem questions"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.1.0",
+    "transformers>=4.40.0",
+    "trl>=0.8.0",
+    "peft>=0.10.0",
+    "bitsandbytes>=0.43.0",
+    "datasets>=2.18.0",
+    "accelerate>=0.28.0",
+    "pyyaml>=6.0",
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.3.0",
+    "ipykernel>=6.0",
+    "jupyter>=1.0",
+]
+gcp = [
+    "google-cloud-storage>=2.14.0",
+    "wandb>=0.16.0",
+]
+
+[project.scripts]
+sft-train = "safety_finetune.train:main"
+sft-eval = "safety_finetune.eval:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
