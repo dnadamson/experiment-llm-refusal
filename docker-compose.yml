@@ -31,3 +31,12 @@ services:
       - HF_HOME=/hf-cache
       - PYTHONPATH=/app/src
     # Override CMD with: docker compose run train safety_finetune.train --config configs/smoke.yaml
+
+  tensorboard:
+    build: .
+    ports:
+      - "6006:6006"
+    volumes:
+      - ./outputs:/app/outputs
+    entrypoint: tensorboard
+    command: --logdir /app/outputs --host 0.0.0.0 --port 6006

@@ -32,6 +32,9 @@ class TrainingConfig:
     logging_steps: int = 10
     save_steps: int = 0
     bf16: bool = False
+    desirable_weight: float = 1.0
+    undesirable_weight: float = 1.0
+    beta: float = 0.1
 
 
 @dataclass
@@ -43,7 +46,7 @@ class DataConfig:
 @dataclass
 class OutputConfig:
     dir: str = "outputs/smoke"
-    push_to_hub: bool = False
+    report_to: str = "tensorboard"
 
 
 @dataclass

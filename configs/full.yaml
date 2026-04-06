@@ -21,6 +21,9 @@ training:
   logging_steps: 10
   save_steps: 100
   bf16: true
+  desirable_weight: 0.31      # recommended range [0.27, 0.36]
+  undesirable_weight: 1.0
+  beta: 0.1
 
 data:
   max_samples: null  # use full dataset
@@ -28,4 +31,4 @@ data:
 
 output:
   dir: "outputs/full"
-  push_to_hub: false
+  report_to: "tensorboard"

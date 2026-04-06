@@ -20,6 +20,9 @@ training:
   warmup_ratio: 0.1
   max_length: 512
   logging_steps: 10
+  desirable_weight: 0.31      # recommended range [0.27, 0.36]
+  undesirable_weight: 1.0
+  beta: 0.1
 
 data:
   max_samples: 100  # tiny subset for smoke test
@@ -27,3 +30,4 @@ data:
 
 output:
   dir: "outputs/smoke"
+  report_to: "tensorboard"

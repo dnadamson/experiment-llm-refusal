@@ -84,11 +84,15 @@ def main():
         warmup_ratio=cfg.training.warmup_ratio,
         max_length=cfg.training.max_length,
         logging_steps=cfg.training.logging_steps,
+        logging_dir=str(output_dir / "logs"),
         save_strategy="steps" if cfg.training.save_steps > 0 else "no",
         save_steps=cfg.training.save_steps if cfg.training.save_steps > 0 else 1,
         bf16=cfg.training.bf16,
+        desirable_weight=cfg.training.desirable_weight,
+        undesirable_weight=cfg.training.undesirable_weight,
+        beta=cfg.training.beta,
         remove_unused_columns=False,
-        report_to="wandb" if cfg.output.push_to_hub else "none",
+        report_to=cfg.output.report_to,
     )
 
     trainer = KTOTrainer(

@@ -1,4 +1,4 @@
-.PHONY: build lock smoke train eval test lint notebook inspect clean
+.PHONY: build lock smoke train eval test lint notebook inspect tensorboard clean
 
 IMAGE := safety-finetune
 RUN := docker compose run --rm train
@@ -29,6 +29,9 @@ lint:
 
 inspect:
 	docker compose run --rm --entrypoint python train /app/scripts/inspect_data.py $(ARGS)
+
+tensorboard:
+	docker compose up tensorboard
 
 notebook:
 	docker compose up notebook
