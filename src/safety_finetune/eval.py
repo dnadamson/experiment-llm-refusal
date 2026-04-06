@@ -60,6 +60,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, required=True)
     parser.add_argument("--model-path", type=str, default=None, help="Path to fine-tuned adapter")
+    parser.add_argument("--base-only", action="store_true", help="Evaluate base model without adapter (baseline)")
     parser.add_argument("--max-wmdp", type=int, default=None, help="Limit WMDP eval prompts")
     parser.add_argument("--max-safe", type=int, default=150, help="Number of safe eval prompts")
     args = parser.parse_args()
@@ -71,11 +72,16 @@ def main():
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    # Load base model + adapter
+    # Load model
     base_model = AutoModelForCausalLM.from_pretrained(
         cfg.model.name, trust_remote_code=True, device_map="auto"
     )
-    model = PeftModel.from_pretrained(base_model, model_path)
+    if args.base_only:
+        print(f"Evaluating BASE model: {cfg.model.name} (no adapter)")
+        model = base_model
+    else:
+        print(f"Evaluating fine-tuned model: {cfg.model.name} + {model_path}")
+        model = PeftModel.from_pretrained(base_model, model_path)
     model.eval()
 
     # Load held-out eval data
@@ -121,7 +127,8 @@ def main():
     print(f"Over-refusal rate:       {1 - safe_answer_rate:.1%} (target: <5%)")
 
     # Save full results
-    output_path = Path(cfg.output.dir) / "eval_results.json"
+    filename = "eval_baseline.json" if args.base_only else "eval_results.json"
+    output_path = Path(cfg.output.dir) / filename
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, "w") as f:
         json.dump(

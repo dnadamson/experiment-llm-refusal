@@ -1,4 +1,4 @@
-.PHONY: build lock smoke train eval test lint notebook clean
+.PHONY: build lock smoke train eval test lint notebook inspect clean
 
 IMAGE := safety-finetune
 RUN := docker compose run --rm train
@@ -26,6 +26,9 @@ test:
 
 lint:
 	$(RUN) ruff check src/ tests/
+
+inspect:
+	docker compose run --rm --entrypoint python train /app/scripts/inspect_data.py $(ARGS)
 
 notebook:
 	docker compose up notebook

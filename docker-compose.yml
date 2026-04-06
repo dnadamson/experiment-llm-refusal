@@ -25,6 +25,7 @@ services:
       - ./configs:/app/configs
       - ./outputs:/app/outputs
       - ./tests:/app/tests
+      - ./scripts:/app/scripts
       - ../hf-cache:/hf-cache
     environment:
       - HF_HOME=/hf-cache

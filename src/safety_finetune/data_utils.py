@@ -299,8 +299,15 @@ def _load_wmdp_eval() -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def _load_harmbench_biochem() -> list[dict]:
-    """Load bio/chem behaviors from HarmBench for eval."""
-    ds = load_dataset("walledai/HarmBench", split="train")
+    """Load bio/chem behaviors from HarmBench for eval.
+
+    HarmBench is a gated dataset — returns empty list if not authenticated.
+    """
+    try:
+        ds = load_dataset("walledai/HarmBench", split="train")
+    except Exception:
+        print("WARNING: Could not load HarmBench (gated dataset). Skipping.")
+        return []
 
     prompts = []
     for row in ds:
