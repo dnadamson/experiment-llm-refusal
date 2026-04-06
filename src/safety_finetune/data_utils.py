@@ -198,7 +198,7 @@ def _load_beavertails_biochem(max_examples: int = 1000) -> list[dict]:
     Only keeps unsafe rows whose prompt matches bio/chem keywords.
     Each yields a harmful completion (label=False) + a refusal (label=True).
     """
-    ds = load_dataset("PKU-Alignment/BeaverTails", split="train")
+    ds = load_dataset("PKU-Alignment/BeaverTails", split="330k_train")
 
     examples = []
     rng = random.Random(42)

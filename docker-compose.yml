@@ -15,6 +15,7 @@ services:
     environment:
       - TOKENIZERS_PARALLELISM=false
       - HF_HOME=/hf-cache
+      - PYTHONPATH=/app/src
 
   train:
     build: .
@@ -23,7 +24,9 @@ services:
       - ./data:/app/data
       - ./configs:/app/configs
       - ./outputs:/app/outputs
+      - ./tests:/app/tests
       - ../hf-cache:/hf-cache
     environment:
       - HF_HOME=/hf-cache
+      - PYTHONPATH=/app/src
     # Override CMD with: docker compose run train safety_finetune.train --config configs/smoke.yaml

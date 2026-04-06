@@ -4,8 +4,8 @@ import argparse
 from pathlib import Path
 
 import torch
-from peft import LoraConfig as PeftLoraConfig, get_peft_model, prepare_model_for_kbit_training
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from peft import LoraConfig as PeftLoraConfig, get_peft_model
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import KTOConfig, KTOTrainer
 
 from safety_finetune.config import load_config
@@ -29,15 +29,18 @@ def main():
     # --- Model ---
     model_kwargs = {"trust_remote_code": True}
 
-    if cfg.model.quantization == "4bit":
-        model_kwargs["quantization_config"] = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.bfloat16,
-            bnb_4bit_use_double_quant=True,
-        )
-    elif cfg.model.quantization == "8bit":
-        model_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+    if cfg.model.quantization in ("4bit", "8bit"):
+        from transformers import BitsAndBytesConfig
+
+        if cfg.model.quantization == "4bit":
+            model_kwargs["quantization_config"] = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_compute_dtype=torch.bfloat16,
+                bnb_4bit_use_double_quant=True,
+            )
+        else:
+            model_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
 
     # Use MPS on Apple Silicon when no CUDA, otherwise CPU
     if torch.cuda.is_available():
@@ -49,6 +52,8 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(cfg.model.name, **model_kwargs)
 
     if cfg.model.quantization:
+        from peft import prepare_model_for_kbit_training
+
         model = prepare_model_for_kbit_training(model)
 
     # --- LoRA ---
@@ -79,7 +84,8 @@ def main():
         warmup_ratio=cfg.training.warmup_ratio,
         max_length=cfg.training.max_length,
         logging_steps=cfg.training.logging_steps,
-        save_steps=cfg.training.save_steps if cfg.training.save_steps > 0 else None,
+        save_strategy="steps" if cfg.training.save_steps > 0 else "no",
+        save_steps=cfg.training.save_steps if cfg.training.save_steps > 0 else 1,
         bf16=cfg.training.bf16,
         remove_unused_columns=False,
         report_to="wandb" if cfg.output.push_to_hub else "none",
@@ -90,7 +96,7 @@ def main():
         args=training_args,
         train_dataset=data["train"],
         eval_dataset=data["eval"],
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
     )
 
     trainer.train()
