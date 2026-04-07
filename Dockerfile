@@ -1,8 +1,11 @@
-# Pin to digest for reproducibility and supply-chain safety
-FROM python:3.11-slim@sha256:9358444059ed78e2975ada2c189f1c1a3144a5dab6f35bff8c981afb38946634
+# CUDA base for GPU support (bitsandbytes needs CUDA runtime)
+# Falls back gracefully to CPU when no GPU is available
+FROM nvidia/cuda:12.6.3-runtime-ubuntu22.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl && \
+    python3.11 python3.11-venv python3-pip curl && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
