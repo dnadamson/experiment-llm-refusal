@@ -9,14 +9,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+ENV PYTHONPATH=/app/src
 
 COPY pyproject.toml .
 COPY requirements.lock .
 COPY src/ src/
 
-# Install pinned deps, then the project (non-editable)
-RUN pip install --no-cache-dir -r requirements.lock && \
-    pip install --no-cache-dir --no-deps ".[dev]"
+# Install pinned deps with Python 3.11 explicitly
+RUN python3.11 -m pip install --no-cache-dir -r requirements.lock && \
+    python3.11 -m pip install --no-cache-dir --no-deps ".[dev]"
 
 COPY configs/ configs/
 COPY scripts/ scripts/
